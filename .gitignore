@@ -1,0 +1,13 @@
+project.txt
+secrets.txt
+.env
+.env.production
+vendor/
+node_modules/
+storage/logs/
+storage/cache/
+*.log
+public/uploads/*
+!public/uploads/.gitkeep
+.claude-nightly/
+bash.exe.stackdump

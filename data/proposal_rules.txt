@@ -1,0 +1,11 @@
+# Default Proposal Rules (managed via web interface at /rules)
+# These rules are stored in the database and managed through the admin panel.
+# This file is a fallback reference only.
+
+[ALWAYS] Be honest about skills - MySQL primary, not PostgreSQL
+[ALWAYS] Reference 26 years of professional development experience
+[AVAILABILITY] Available starting April 1, 2026
+[RATE] Suggest rate based on posted budget range
+[NEVER] Never exaggerate skills or claim false expertise
+[TONE] Match tone to client style (corporate vs casual)
+[SKILLS] Flag weak fits - skip if <50% skill match

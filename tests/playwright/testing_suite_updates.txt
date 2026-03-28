@@ -1,0 +1,11 @@
+  Upgrade your Playwright test suite in the manner below.
+  Read C:\Users\email\.claude\test-fixtures-template.txt for the base user profiles.
+  Read tests/playwright/fixtures/test-users.json (already generated - if not, generate one with project-specific test data: menu items, health entries, equipment listings, etc. as applicable).
+  Read the testing strategy report at C:\xampp\htdocs\claude_dashboard\scripts\testing_strategy_email.html
+  Build the auth fixture, then expand the test suite using the four-layer model.
+  Add the 2FA test bypass (APP_ENV=testing accepts code 123456). That unblocks all authenticated tests.
+  If there is an input field on any route that does not have the required information, send me a list and we'll add to it.
+  Report start time, end time, and total time of testing period.
+  Do not delete or overwrite existing passing tests — only add new ones.
+  After tests complete, review any failures. For each failure, determine if it's a bug in the app or a gap in the test. If it's a test gap, write the missing test. If it's an app bug, log it and write a
+  regression test that will catch it going forward. Report both. 

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>claude_freelance — Build Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f4f6f9; color: #333; padding: 20px; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { color: #1a3a5c; font-size: 1.8rem; margin-bottom: 4px; }
+        .subtitle { color: #666; margin-bottom: 25px; font-size: 0.9rem; }
+        h2 { color: #fff; background: #2c5f8a; padding: 10px 16px; border-radius: 6px 6px 0 0; font-size: 1.05rem; margin-top: 30px; margin-bottom: 0; }
+        .section { background: #fff; border: 1px solid #dde3ea; border-top: none; padding: 18px 20px; border-radius: 0 0 6px 6px; margin-bottom: 10px; }
+        h3 { color: #2c5f8a; font-size: 0.95rem; margin: 14px 0 6px 0; }
+        h3:first-child { margin-top: 0; }
+        ul, ol { margin-left: 20px; margin-bottom: 10px; }
+        li { margin-bottom: 4px; font-size: 0.9rem; }
+        code { background: #eef2f7; padding: 1px 5px; border-radius: 3px; font-size: 0.85rem; }
+        pre { background: #1e2a3a; color: #e0e8f0; padding: 14px; border-radius: 5px; overflow-x: auto; font-size: 0.82rem; margin: 10px 0; }
+        .phase-tag { display: inline-block; background: #d4edda; color: #155724; padding: 2px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; margin-left: 8px; }
+        .phase-tag.p2 { background: #fff3cd; color: #856404; }
+        .phase-tag.p3 { background: #cce5ff; color: #004085; }
+        .phase-tag.p4 { background: #e2d5f1; color: #4a2d7a; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.85rem; }
+        th { background: #eef2f7; text-align: left; padding: 8px 12px; border-bottom: 2px solid #dde3ea; }
+        td { padding: 7px 12px; border-bottom: 1px solid #eee; }
+        .decision { background: #fff8e1; border-left: 4px solid #f0ad4e; padding: 10px 14px; margin: 10px 0; font-size: 0.88rem; border-radius: 0 4px 4px 0; }
+        .decision strong { color: #856404; }
+        .footer { margin-top: 30px; padding-top: 12px; border-top: 1px solid #ddd; color: #888; font-size: 0.78rem; text-align: center; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+<h1>claude_freelance — Build Plan</h1>
+<p class="subtitle">Multi-platform freelance proposal optimizer &bull; Generated 2026-03-28 &bull; freelance.visionquest2020.net</p>
+
+<!-- ============================================================ -->
+<h2>Overview</h2>
+<div class="section">
+    <p><strong>What it does:</strong> Upload your resume, paste (or auto-receive) job postings from 5 freelance platforms, and get AI-generated tailored proposals via the Claude API — delivered to your inbox for phone review.</p>
+
+    <h3>Target Platforms</h3>
+    <table>
+        <tr><th>Platform</th><th>Input Method</th><th>Notes</th></tr>
+        <tr><td>Upwork</td><td>Email alerts + manual paste</td><td>Primary platform, bidding model</td></tr>
+        <tr><td>Wellfound</td><td>Email alerts + manual paste</td><td>Startup ecosystem, direct hire</td></tr>
+        <tr><td>Contra</td><td>Manual paste (initially)</td><td>Portfolio-driven, 0% commission</td></tr>
+        <tr><td>Turing.com</td><td>Email alerts + manual paste</td><td>AI-matched, long-term contracts</td></tr>
+        <tr><td>Freelancer.com</td><td>Email alerts + manual paste</td><td>Bidding + contest model</td></tr>
+    </table>
+
+    <h3>Two Operating Modes</h3>
+    <ol>
+        <li><strong>Manual mode (Phase 1):</strong> Log in, paste a job posting, get a proposal generated on screen</li>
+        <li><strong>Automated mode (Phase 3):</strong> Gmail forwards job alerts → server parses → Claude API generates → proposal emailed to you</li>
+    </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2>Architecture</h2>
+<div class="section">
+    <h3>Tech Stack (from project.txt)</h3>
+    <ul>
+        <li>PHP 8.1+ custom MVC framework (standard claude_* structure)</li>
+        <li>MySQL database: <code>freelance</code></li>
+        <li>Bootstrap 5, vanilla JS, left sidebar nav</li>
+        <li>Session-based auth, admin dashboard</li>
+        <li>Claude API (Anthropic SDK) for proposal generation</li>
+        <li>claude_messenger for email delivery</li>
+        <li>Production: <code>freelance.visionquest2020.net</code> on AWS (50.16.139.240)</li>
+    </ul>
+
+    <h3>Directory Structure</h3>
+<pre>claude_freelance/
+├── core/                    # Framework (Controller, Model, Router, Auth, Csrf, Env, Database)
+├── config/
+│   ├── app.php
+│   ├── database.php
+│   └── routes.php
+├── app/
+│   ├── Controllers/
+│   │   ├── AuthController.php
+│   │   ├── DashboardController.php
+│   │   ├── ResumeController.php
+│   │   ├── JobController.php
+│   │   ├── ProposalController.php
+│   │   ├── PlatformController.php
+│   │   ├── RulesController.php
+│   │   └── CalendarController.php
+│   ├── Models/
+│   │   ├── User.php
+│   │   ├── Resume.php
+│   │   ├── Job.php
+│   │   ├── Proposal.php
+│   │   ├── Platform.php
+│   │   ├── ProposalRule.php
+│   │   └── Availability.php
+│   ├── Services/
+│   │   ├── ClaudeApiService.php        # Anthropic API client
+│   │   ├── ProposalGenerator.php       # Core engine: resume + job + rules → proposal
+│   │   ├── JobParser.php               # Base parser interface
+│   │   ├── Parsers/
+│   │   │   ├── UpworkParser.php
+│   │   │   ├── WellfoundParser.php
+│   │   │   ├── ContraParser.php
+│   │   │   ├── TuringParser.php
+│   │   │   └── FreelancerParser.php
+│   │   └── EmailPipeline.php           # Inbound email → parse → generate → notify
+│   └── Views/
+│       ├── layouts/                    # header.php, footer.php, sidebar.php
+│       ├── auth/                       # login, register, forgot/reset password
+│       ├── dashboard/                  # Main dashboard
+│       ├── resumes/                    # Upload, view, edit resume
+│       ├── jobs/                       # Paste job, view parsed jobs, history
+│       ├── proposals/                  # Generated proposals, edit, history
+│       ├── platforms/                  # Platform config & accounts
+│       ├── rules/                      # Proposal rules management
+│       ├── calendar/                   # Availability scheduling
+│       └── errors/
+├── public/
+│   ├── index.php
+│   ├── css/
+│   ├── js/
+│   └── uploads/
+├── data/
+│   ├── resume.txt                      # Fallback flat-file resume
+│   └── proposal_rules.txt              # Fallback flat-file rules
+├── migrations/
+├── scripts/
+│   └── deploy.sh
+├── tests/
+├── docs/
+├── .env / .env.example
+├── .gitignore
+└── CLAUDE.md</pre>
+</div>
+
+<!-- ============================================================ -->
+<h2>Database Schema</h2>
+<div class="section">
+<pre>-- Users (admin auth)
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('admin','user') DEFAULT 'admin',
+    is_active TINYINT(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Resumes
+CREATE TABLE resumes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,                -- plain text version for API
+    file_path VARCHAR(500),              -- uploaded file (PDF/DOCX)
+    is_active TINYINT(1) DEFAULT 1,      -- which resume to use for generation
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Platforms
+CREATE TABLE platforms (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,          -- Upwork, Wellfound, etc.
+    slug VARCHAR(50) UNIQUE NOT NULL,
+    base_url VARCHAR(255),
+    is_active TINYINT(1) DEFAULT 1,
+    alert_email_from VARCHAR(255),       -- sender address for email parsing
+    parser_class VARCHAR(100),           -- e.g., UpworkParser
+    notes TEXT
+);
+
+-- Jobs (parsed job postings)
+CREATE TABLE jobs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    platform_id INT NOT NULL,
+    external_id VARCHAR(255),            -- platform's job ID if available
+    title VARCHAR(500) NOT NULL,
+    description TEXT NOT NULL,
+    skills_required TEXT,                -- comma-separated or JSON
+    budget_min DECIMAL(10,2),
+    budget_max DECIMAL(10,2),
+    budget_type ENUM('fixed','hourly','not_specified') DEFAULT 'not_specified',
+    client_info TEXT,                    -- client name, rating, history
+    job_url VARCHAR(500),
+    source ENUM('manual','email') DEFAULT 'manual',
+    raw_email TEXT,                      -- original email body if from pipeline
+    fit_score TINYINT,                   -- 1-10 AI-assessed match quality
+    fit_notes TEXT,                      -- why it's a good/bad fit
+    status ENUM('new','proposal_drafted','submitted','rejected','won','archived') DEFAULT 'new',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (platform_id) REFERENCES platforms(id)
+);
+
+-- Proposals (generated drafts)
+CREATE TABLE proposals (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    job_id INT NOT NULL,
+    resume_id INT NOT NULL,
+    content TEXT NOT NULL,               -- the generated proposal text
+    tone VARCHAR(50),                    -- corporate, casual, technical
+    suggested_rate DECIMAL(10,2),
+    rate_type ENUM('hourly','fixed','not_specified'),
+    version INT DEFAULT 1,              -- regeneration tracking
+    is_submitted TINYINT(1) DEFAULT 0,
+    submitted_at TIMESTAMP NULL,
+    api_model VARCHAR(100),             -- which Claude model was used
+    api_tokens_used INT,
+    generation_time_ms INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (job_id) REFERENCES jobs(id),
+    FOREIGN KEY (resume_id) REFERENCES resumes(id)
+);
+
+-- Proposal Rules (do's and don'ts for the AI)
+CREATE TABLE proposal_rules (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    category ENUM('always','never','tone','skills','availability','rate','custom') DEFAULT 'custom',
+    rule_text TEXT NOT NULL,
+    is_active TINYINT(1) DEFAULT 1,
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Availability (calendar scheduling)
+CREATE TABLE availability (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    available_from DATE NOT NULL,
+    available_to DATE,                   -- NULL = indefinitely
+    hours_per_week INT DEFAULT 40,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Error Log
+CREATE TABLE error_log (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    message TEXT NOT NULL,
+    context TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</pre>
+</div>
+
+<!-- ============================================================ -->
+<h2>Build Phases</h2>
+<div class="section">
+
+    <h3>Phase 1 — Foundation + Manual Mode <span class="phase-tag">Core</span></h3>
+    <p>Get the app running with manual paste-and-generate workflow.</p>
+    <ol>
+        <li><strong>Scaffold MVC framework</strong> — core/, config/, public/index.php, .htaccess files, .env</li>
+        <li><strong>Database setup</strong> — create <code>freelance</code> DB, run all migrations</li>
+        <li><strong>Auth system</strong> — login, logout, register, forgot/reset password, session guards</li>
+        <li><strong>Admin dashboard</strong> — left sidebar nav, stats overview (jobs received, proposals generated, win rate)</li>
+        <li><strong>Resume management</strong> — upload PDF/DOCX, extract plain text, CRUD, set active resume</li>
+        <li><strong>Platform management</strong> — seed 5 platforms, enable/disable, configure parser class</li>
+        <li><strong>Proposal rules</strong> — CRUD for rules by category, drag-and-drop reorder, seed defaults from spec:
+            <ul>
+                <li>Honest about skills (MySQL primary, not Postgres)</li>
+                <li>26 years experience</li>
+                <li>Availability from April 1, 2026</li>
+                <li>Rate suggestion based on budget range</li>
+                <li>Flag weak fits — don't draft for bad matches</li>
+                <li>Match tone to client (corporate vs casual)</li>
+            </ul>
+        </li>
+        <li><strong>Manual job entry</strong> — paste job posting, select platform, parse into structured fields</li>
+        <li><strong>Claude API integration</strong> — <code>ClaudeApiService.php</code> + <code>ProposalGenerator.php</code>:
+            <ul>
+                <li>Build prompt: resume + job + rules + availability → system/user message</li>
+                <li>Call Claude API, get proposal text + fit score + suggested rate</li>
+                <li>Store result in proposals table</li>
+            </ul>
+        </li>
+        <li><strong>Proposal view/edit</strong> — display generated proposal, allow edits, copy-to-clipboard, regenerate with different tone, print/PDF export</li>
+        <li><strong>Apache vhost</strong> — <code>freelance.local</code> pointing to <code>public/</code></li>
+        <li><strong>Git init</strong> + .gitignore + first commit</li>
+    </ol>
+
+    <h3>Phase 2 — Platform Parsers + Job History <span class="phase-tag p2">Enhancement</span></h3>
+    <p>Build the per-platform parsers and job tracking pipeline.</p>
+    <ol>
+        <li><strong>Job parsers</strong> — one class per platform in <code>app/Services/Parsers/</code>:
+            <ul>
+                <li><code>UpworkParser.php</code> — extract title, description, skills, budget, client info from Upwork job format</li>
+                <li><code>WellfoundParser.php</code> — startup-style postings, equity info</li>
+                <li><code>FreelancerParser.php</code> — bidding format, contest detection</li>
+                <li><code>TuringParser.php</code> — long-term role format, tech stack matching</li>
+                <li><code>ContraParser.php</code> — portfolio-style project descriptions</li>
+            </ul>
+        </li>
+        <li><strong>Job history &amp; search</strong> — paginated list, filter by platform/status/fit score, full-text search</li>
+        <li><strong>Proposal history</strong> — all generated proposals, version tracking, status (drafted/submitted/won/lost)</li>
+        <li><strong>Availability calendar</strong> — visual calendar for scheduling availability windows, hours per week</li>
+        <li><strong>Dashboard analytics</strong> — proposals per platform, win rate, average fit score, API usage/cost</li>
+    </ol>
+
+    <h3>Phase 3 — Automated Email Pipeline <span class="phase-tag p3">Automation</span></h3>
+    <p>The hands-free mode: job alerts arrive, proposals appear in your inbox.</p>
+    <ol>
+        <li><strong>Inbound email setup</strong> — configure <code>jobs@visionquest2020.net</code> (or similar) on the server</li>
+        <li><strong>Gmail forwarding</strong> — filters for each platform's alert emails, forward to server address</li>
+        <li><strong>Email ingestion</strong> — IMAP poll (simpler, scheduled via cron) or pipe-to-script:
+            <ul>
+                <li>Connect to mailbox, fetch UNSEEN messages</li>
+                <li>Identify platform from sender/subject</li>
+                <li>Route to correct parser</li>
+            </ul>
+        </li>
+        <li><strong>Auto-generate pipeline</strong> — <code>EmailPipeline.php</code>:
+            <ul>
+                <li>Parse email → create Job record</li>
+                <li>Check fit score — skip if below threshold</li>
+                <li>Generate proposal via Claude API</li>
+                <li>Email draft via claude_messenger</li>
+                <li>Log everything for review in dashboard</li>
+            </ul>
+        </li>
+        <li><strong>Cron job</strong> — poll every 5-15 minutes (configurable)</li>
+        <li><strong>Email reply integration</strong> — register in claude_mailbox poller for phone-based approve/edit/reject</li>
+    </ol>
+
+    <h3>Phase 4 — Polish &amp; Production <span class="phase-tag p4">Deploy</span></h3>
+    <ol>
+        <li><strong>PDF generation</strong> — export proposals as formatted PDFs (DOMPDF)</li>
+        <li><strong>Image processing</strong> — resume file thumbnails, profile images</li>
+        <li><strong>Security hardening</strong> — CSRF, CSP headers, input sanitization, rate limiting on API calls</li>
+        <li><strong>PHPUnit tests</strong> — models, services, parsers, API integration</li>
+        <li><strong>Deploy script</strong> — <code>scripts/deploy.sh</code> for git-pull deployment to AWS</li>
+        <li><strong>Production .env</strong> — wire up RDS credentials, Anthropic API key, mail config</li>
+        <li><strong>SSL setup</strong> — Let's Encrypt for freelance.visionquest2020.net</li>
+        <li><strong>Nightly automation</strong> — .claude-nightly config, PHPUnit + Playwright overnight runs</li>
+        <li><strong>Cost estimate</strong> — baseline run via claude_estimator</li>
+    </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2>Core Engine: How Proposal Generation Works</h2>
+<div class="section">
+    <h3>The Prompt Architecture</h3>
+    <p>The <code>ProposalGenerator</code> assembles a Claude API call with:</p>
+
+    <table>
+        <tr><th>Component</th><th>Source</th><th>Purpose</th></tr>
+        <tr><td><strong>System prompt</strong></td><td>Hardcoded + rules DB</td><td>Define the AI's role as a proposal writer, inject all active proposal rules</td></tr>
+        <tr><td><strong>Resume</strong></td><td>Active resume from DB</td><td>Skills, experience, background for the AI to reference</td></tr>
+        <tr><td><strong>Job posting</strong></td><td>Parsed job record</td><td>What the client wants — title, description, skills, budget</td></tr>
+        <tr><td><strong>Availability</strong></td><td>Calendar DB</td><td>Current availability window and hours/week</td></tr>
+        <tr><td><strong>Platform context</strong></td><td>Platform record</td><td>Adjust tone/format for Upwork bid vs Wellfound intro vs Contra pitch</td></tr>
+    </table>
+
+    <h3>Output Structure</h3>
+    <p>The AI returns a JSON object with:</p>
+    <ul>
+        <li><strong>fit_score</strong> (1-10) — how well the job matches your skills</li>
+        <li><strong>fit_notes</strong> — why it's a good/bad fit</li>
+        <li><strong>proposal_text</strong> — the full proposal draft</li>
+        <li><strong>suggested_rate</strong> — recommended rate based on budget + your experience</li>
+        <li><strong>tone</strong> — detected/applied tone (corporate, casual, technical)</li>
+        <li><strong>skip_reason</strong> — if fit_score is too low, why it recommends not bidding</li>
+    </ul>
+</div>
+
+<!-- ============================================================ -->
+<h2>Decisions Needed From You</h2>
+<div class="section">
+    <div class="decision">
+        <strong>1. Mail handling approach:</strong> IMAP poll (simpler, runs on cron every 5-15 min) vs pipe-to-script (instant, but requires server mail config). IMAP is recommended for Phase 3 — it works on the existing AWS setup without touching Postfix/mail routing.
+    </div>
+    <div class="decision">
+        <strong>2. Inbound email address:</strong> <code>jobs@visionquest2020.net</code>? Or use the new <code>freelance.visionquest2020.net</code> domain — e.g., <code>jobs@freelance.visionquest2020.net</code>? Need a mailbox created on GoDaddy or the server.
+    </div>
+    <div class="decision">
+        <strong>3. Fit score threshold:</strong> What's the minimum fit score (1-10) for auto-generating a proposal in the email pipeline? Suggestion: 5 or above. Below that, just log the job and send a "skipped — weak fit" notification.
+    </div>
+    <div class="decision">
+        <strong>4. Anthropic API key:</strong> Will go in <code>.env</code> as <code>ANTHROPIC_API_KEY</code>. Do you have one ready, or need to create one at console.anthropic.com?
+    </div>
+    <div class="decision">
+        <strong>5. project_description in project.txt:</strong> Still blank — suggestion: <em>"Multi-platform freelance proposal optimizer powered by Claude API"</em>
+    </div>
+    <div class="decision">
+        <strong>6. mailbox_project_key in project.txt:</strong> Still blank — should be <code>claude_freelance</code> for poller registration.
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<h2>Estimated Scope</h2>
+<div class="section">
+    <table>
+        <tr><th>Phase</th><th>What</th><th>Key Deliverable</th></tr>
+        <tr><td>Phase 1</td><td>Foundation + Manual Mode</td><td>Paste a job, get a proposal on screen</td></tr>
+        <tr><td>Phase 2</td><td>Parsers + History</td><td>Per-platform parsing, job/proposal tracking, calendar</td></tr>
+        <tr><td>Phase 3</td><td>Email Pipeline</td><td>Hands-free: job alert → proposal in inbox</td></tr>
+        <tr><td>Phase 4</td><td>Polish + Production</td><td>Deploy to freelance.visionquest2020.net</td></tr>
+    </table>
+    <p style="margin-top:10px;font-size:0.88rem;color:#666;">Phase 1 is the foundation — everything else builds on it. Ready to start building on your go-ahead.</p>
+</div>
+
+<div class="footer">
+    claude_freelance &mdash; Build Plan &mdash; 2026-03-28 &mdash; Generated by Claude Code
+</div>
+
+</div>
+</body>
+</html>

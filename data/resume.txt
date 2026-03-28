@@ -1,0 +1,3 @@
+# Placeholder Resume
+Upload your actual resume through the web interface at /resumes/create
+This file serves as a fallback reference only.

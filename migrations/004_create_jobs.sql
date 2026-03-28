@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS jobs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    platform_id INT NOT NULL,
+    external_id VARCHAR(255),
+    title VARCHAR(500) NOT NULL,
+    description TEXT NOT NULL,
+    skills_required TEXT,
+    budget_min DECIMAL(10,2),
+    budget_max DECIMAL(10,2),
+    budget_type ENUM('fixed','hourly','not_specified') DEFAULT 'not_specified',
+    client_info TEXT,
+    job_url VARCHAR(500),
+    source ENUM('manual','email') DEFAULT 'manual',
+    raw_email TEXT,
+    fit_score TINYINT,
+    fit_notes TEXT,
+    status ENUM('new','proposal_drafted','submitted','rejected','won','archived') DEFAULT 'new',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (platform_id) REFERENCES platforms(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

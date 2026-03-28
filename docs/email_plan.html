@@ -1,0 +1,100 @@
+<div style="font-family:Arial,sans-serif;max-width:750px;margin:0 auto;color:#333;line-height:1.6;">
+
+<h2 style="color:#1a3a5c;border-bottom:2px solid #2c5f8a;padding-bottom:8px;">claude_freelance - Final Build Plan</h2>
+<p style="color:#666;font-size:14px;">Multi-platform freelance proposal optimizer powered by Claude API<br>Production: freelance.visionquest2020.net - 2026-03-28</p>
+
+<h3 style="color:#2c5f8a;margin-top:20px;">Your Decisions (Confirmed)</h3>
+<table style="width:100%;border-collapse:collapse;font-size:14px;margin:10px 0;">
+<tr style="background:#d4edda;"><td style="padding:8px 12px;font-weight:bold;width:30%;">Mail handling</td><td style="padding:8px 12px;">Pipe-to-script (instant) preferred; IMAP poll as fallback</td></tr>
+<tr style="background:#e8f5e9;"><td style="padding:8px 12px;font-weight:bold;">Inbound email</td><td style="padding:8px 12px;">jobs@visionquest2020.net (create mailbox on GoDaddy)</td></tr>
+<tr style="background:#d4edda;"><td style="padding:8px 12px;font-weight:bold;">Fit score threshold</td><td style="padding:8px 12px;">5+ auto-generates. Below 5 = log only + skipped notification</td></tr>
+<tr style="background:#e8f5e9;"><td style="padding:8px 12px;font-weight:bold;">API key</td><td style="padding:8px 12px;">Create at console.anthropic.com - .env as ANTHROPIC_API_KEY</td></tr>
+<tr style="background:#d4edda;"><td style="padding:8px 12px;font-weight:bold;">Description</td><td style="padding:8px 12px;">Multi-platform freelance proposal optimizer powered by Claude API</td></tr>
+<tr style="background:#e8f5e9;"><td style="padding:8px 12px;font-weight:bold;">Mailbox key</td><td style="padding:8px 12px;">claude_freelance</td></tr>
+</table>
+
+<h3 style="color:#2c5f8a;">Target Platforms</h3>
+<p style="font-size:14px;">Upwork, Wellfound, Contra, Turing.com, Freelancer.com</p>
+
+<hr style="border:none;border-top:1px solid #ddd;margin:20px 0;">
+
+<h3 style="color:#2c5f8a;">Phase 1 - Foundation + Manual Mode</h3>
+<p style="font-size:14px;color:#155724;font-weight:bold;">Deliverable: Paste a job, get a proposal on screen</p>
+<ol style="font-size:14px;">
+<li>Scaffold MVC framework (core/, config/, public/index.php, .htaccess, .env)</li>
+<li>Create freelance MySQL database + run all migrations</li>
+<li>Auth system - login, logout, register, forgot/reset password, session guards</li>
+<li>Admin dashboard - left sidebar nav, stats overview (jobs, proposals, win rate)</li>
+<li>Resume management - upload PDF/DOCX, extract plain text, CRUD, set active</li>
+<li>Platform management - seed 5 platforms, enable/disable, configure parser class</li>
+<li>Proposal rules - CRUD by category, drag-and-drop reorder, seed defaults (honest about skills, 26yr exp, availability Apr 1 2026, rate suggestions, flag weak fits, match tone to client)</li>
+<li>Manual job entry - paste job posting, select platform, parse into structured fields</li>
+<li>Claude API integration - ProposalGenerator: resume + job + rules + availability = proposal + fit score + rate</li>
+<li>Proposal view/edit - display, edit, copy-to-clipboard, regenerate with different tone</li>
+<li>Apache vhost - freelance.local</li>
+<li>Git init + .gitignore + first commit</li>
+</ol>
+
+<h3 style="color:#2c5f8a;">Phase 2 - Platform Parsers + Job History</h3>
+<p style="font-size:14px;color:#856404;font-weight:bold;">Deliverable: Per-platform parsing, job/proposal tracking, calendar</p>
+<ol style="font-size:14px;">
+<li>Platform-specific parsers - Upwork, Wellfound, Contra, Turing, Freelancer</li>
+<li>Job history and search - paginated, filter by platform/status/fit score</li>
+<li>Proposal history - versions, status tracking (drafted/submitted/won/lost)</li>
+<li>Availability calendar - visual calendar, scheduling windows, hours per week</li>
+<li>Dashboard analytics - proposals per platform, win rate, API usage/cost</li>
+</ol>
+
+<h3 style="color:#2c5f8a;">Phase 3 - Automated Email Pipeline</h3>
+<p style="font-size:14px;color:#004085;font-weight:bold;">Deliverable: Job alert to proposal in your inbox (hands-free)</p>
+<ol style="font-size:14px;">
+<li>Pipe-to-script setup on AWS - incoming mail to jobs@visionquest2020.net triggers PHP parser instantly (IMAP poll fallback)</li>
+<li>Gmail forwarding - filters per platform alert emails forward to jobs@visionquest2020.net</li>
+<li>EmailPipeline.php - identify platform, route to parser, create Job, check fit score (below 5 = skip + notify, 5+ = generate proposal), email draft via claude_messenger</li>
+<li>Register in claude_mailbox poller for phone-based approve/edit/reject</li>
+</ol>
+
+<h3 style="color:#2c5f8a;">Phase 4 - Polish + Production</h3>
+<p style="font-size:14px;color:#4a2d7a;font-weight:bold;">Deliverable: Live at freelance.visionquest2020.net</p>
+<ol style="font-size:14px;">
+<li>PDF export of proposals (DOMPDF)</li>
+<li>Security hardening - CSRF, CSP, input sanitization, rate limiting</li>
+<li>PHPUnit + Playwright tests</li>
+<li>Deploy script (git-pull to AWS 50.16.139.240)</li>
+<li>Production .env - RDS credentials, API key, mail config</li>
+<li>SSL - Lets Encrypt for freelance.visionquest2020.net</li>
+<li>Nightly automation - .claude-nightly config</li>
+<li>Cost estimate baseline</li>
+</ol>
+
+<hr style="border:none;border-top:1px solid #ddd;margin:20px 0;">
+
+<h3 style="color:#2c5f8a;">Database Tables</h3>
+<table style="width:100%;border-collapse:collapse;font-size:13px;margin:10px 0;">
+<tr style="background:#2c5f8a;color:#fff;"><th style="padding:6px 10px;text-align:left;">Table</th><th style="padding:6px 10px;">Purpose</th></tr>
+<tr style="border-bottom:1px solid #eee;"><td style="padding:6px 10px;">users</td><td style="padding:6px 10px;">Admin auth (session-based)</td></tr>
+<tr style="background:#f8f9fa;border-bottom:1px solid #eee;"><td style="padding:6px 10px;">resumes</td><td style="padding:6px 10px;">Uploaded resumes + plain text extraction</td></tr>
+<tr style="border-bottom:1px solid #eee;"><td style="padding:6px 10px;">platforms</td><td style="padding:6px 10px;">5 target platforms + parser config</td></tr>
+<tr style="background:#f8f9fa;border-bottom:1px solid #eee;"><td style="padding:6px 10px;">jobs</td><td style="padding:6px 10px;">Parsed job postings (manual + email)</td></tr>
+<tr style="border-bottom:1px solid #eee;"><td style="padding:6px 10px;">proposals</td><td style="padding:6px 10px;">Generated drafts, versions, rates, fit scores</td></tr>
+<tr style="background:#f8f9fa;border-bottom:1px solid #eee;"><td style="padding:6px 10px;">proposal_rules</td><td style="padding:6px 10px;">AI rules by category</td></tr>
+<tr style="border-bottom:1px solid #eee;"><td style="padding:6px 10px;">availability</td><td style="padding:6px 10px;">Calendar scheduling windows</td></tr>
+<tr style="background:#f8f9fa;"><td style="padding:6px 10px;">error_log</td><td style="padding:6px 10px;">Error tracking + email alerts</td></tr>
+</table>
+
+<h3 style="color:#2c5f8a;">Core Engine</h3>
+<p style="font-size:14px;">ProposalGenerator builds Claude API call from: <strong>system prompt + rules</strong>, <strong>active resume</strong>, <strong>parsed job</strong>, <strong>availability windows</strong>, <strong>platform context</strong> (adjusts tone per platform).</p>
+<p style="font-size:14px;"><strong>Output:</strong> proposal_text, fit_score (1-10), fit_notes, suggested_rate, tone, skip_reason</p>
+
+<hr style="border:none;border-top:1px solid #ddd;margin:20px 0;">
+
+<h3 style="color:#c0392b;">Your To-Do Before Build</h3>
+<ul style="font-size:14px;">
+<li>Create <strong>jobs@visionquest2020.net</strong> mailbox on GoDaddy</li>
+<li>Create Anthropic API key at <strong>console.anthropic.com</strong></li>
+</ul>
+
+<p style="margin-top:20px;font-size:14px;">Full plan with complete DB schema saved at docs/build_plan.html. Say the word and I start Phase 1.</p>
+
+<p style="color:#888;font-size:12px;margin-top:25px;border-top:1px solid #ddd;padding-top:10px;">claude_freelance - Final Build Plan - 2026-03-28</p>
+</div>

@@ -30,13 +30,13 @@ $router->post('resumes/activate/{id}', 'ResumeController@activate');
 $router->get('jobs', 'JobController@index');
 $router->get('jobs/create', 'JobController@create');
 $router->post('jobs/store', 'JobController@store');
-$router->get('jobs/view/{id}', 'JobController@view');
+$router->get('jobs/view/{id}', 'JobController@show');
 $router->post('jobs/delete/{id}', 'JobController@delete');
 $router->post('jobs/archive/{id}', 'JobController@archive');
 
 // Proposals
 $router->get('proposals', 'ProposalController@index');
-$router->get('proposals/view/{id}', 'ProposalController@view');
+$router->get('proposals/view/{id}', 'ProposalController@show');
 $router->post('proposals/generate/{jobId}', 'ProposalController@generate');
 $router->post('proposals/regenerate/{id}', 'ProposalController@regenerate');
 $router->get('proposals/edit/{id}', 'ProposalController@edit');

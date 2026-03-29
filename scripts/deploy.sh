@@ -4,7 +4,7 @@
 
 set -e
 
-REMOTE_USER="bitnami"
+REMOTE_USER="admin"
 REMOTE_HOST="50.16.139.240"
 REMOTE_PATH="/var/www/html/freelance"
 BRANCH="main"

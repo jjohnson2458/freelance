@@ -65,6 +65,35 @@
         </div>
     </div>
 
+    <!-- Email Pipeline Stats -->
+    <?php if ($emailJobs > 0): ?>
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card border-info">
+                <div class="card-header bg-info bg-opacity-10">
+                    <i class="bi bi-envelope-arrow-down me-1"></i> Email Pipeline
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col">
+                            <div class="h4 mb-0"><?= $emailJobs ?></div>
+                            <small class="text-muted">Jobs from Email</small>
+                        </div>
+                        <div class="col">
+                            <div class="h4 mb-0"><?= $emailJobsMonth ?></div>
+                            <small class="text-muted">This Month</small>
+                        </div>
+                        <div class="col">
+                            <div class="h4 mb-0"><?= $totalJobs > 0 ? round(($emailJobs / $totalJobs) * 100) : 0 ?>%</div>
+                            <small class="text-muted">Automated</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <!-- Recent Tables -->
     <div class="row g-3">
         <div class="col-lg-6">

@@ -44,6 +44,12 @@ class JobController extends \Core\Controller
             $params[] = $status;
         }
 
+        $source = $_GET['source'] ?? '';
+        if ($source !== '' && $source !== 'all') {
+            $conditions[] = 'j.source = ?';
+            $params[] = $source;
+        }
+
         $search = trim($_GET['search'] ?? '');
         if ($search !== '') {
             $conditions[] = 'j.title LIKE ?';
@@ -88,6 +94,7 @@ class JobController extends \Core\Controller
             'totalPages' => $totalPages,
             'filterPlatformId' => $platformId,
             'filterStatus' => $status,
+            'filterSource' => $source,
             'filterSearch' => $search,
             'success' => $success,
             'error' => $error,
@@ -148,7 +155,7 @@ class JobController extends \Core\Controller
         $this->redirect('/jobs/view/' . $jobId);
     }
 
-    public function view(string $id): void
+    public function show(string $id): void
     {
         $this->requireAuth();
 

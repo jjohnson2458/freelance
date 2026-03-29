@@ -51,7 +51,15 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
+                    <label class="form-label">Source</label>
+                    <select name="source" class="form-select form-select-sm">
+                        <option value="all">All Sources</option>
+                        <option value="manual" <?= ($filterSource ?? '') === 'manual' ? 'selected' : '' ?>>Manual</option>
+                        <option value="email" <?= ($filterSource ?? '') === 'email' ? 'selected' : '' ?>>Email</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
                     <label class="form-label">Search</label>
                     <input type="text" name="search" class="form-control form-control-sm" placeholder="Search by title..." value="<?= htmlspecialchars($filterSearch) ?>">
                 </div>
@@ -97,6 +105,9 @@
                                         <a href="/jobs/view/<?= $job['id'] ?>" class="text-decoration-none fw-semibold">
                                             <?= htmlspecialchars(mb_strimwidth($job['title'], 0, 50, '...')) ?>
                                         </a>
+                                        <?php if (($job['source'] ?? 'manual') === 'email'): ?>
+                                            <span class="badge bg-info bg-opacity-75 ms-1" title="From email pipeline"><i class="bi bi-envelope-fill"></i></span>
+                                        <?php endif; ?>
                                     </td>
                                     <td><?= htmlspecialchars($job['platform_name'] ?? 'N/A') ?></td>
                                     <td>

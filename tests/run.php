@@ -113,11 +113,44 @@ assert_equals('2026-04-01', $availability[0]['available_from'], 'Availability st
 echo "\n--- Services ---\n";
 require_once BASE_PATH . '/app/Services/ClaudeApiService.php';
 $api = new App\Services\ClaudeApiService();
-assert_true(!$api->isConfigured(), 'API reports not configured (no key in .env)');
+assert_true($api->isConfigured(), 'API is configured (key in .env)');
 
 require_once BASE_PATH . '/app/Services/ProposalGenerator.php';
 $generator = new App\Services\ProposalGenerator();
-assert_true(!$generator->isConfigured(), 'Generator reports not configured (no API key)');
+assert_true($generator->isConfigured(), 'Generator is configured (API key present)');
+
+echo "\n--- Parsers ---\n";
+require_once BASE_PATH . '/app/Services/Parsers/BaseParser.php';
+require_once BASE_PATH . '/app/Services/Parsers/UpworkParser.php';
+require_once BASE_PATH . '/app/Services/Parsers/WellfoundParser.php';
+require_once BASE_PATH . '/app/Services/Parsers/ContraParser.php';
+require_once BASE_PATH . '/app/Services/Parsers/TuringParser.php';
+require_once BASE_PATH . '/app/Services/Parsers/FreelancerParser.php';
+
+// Test canHandle detection
+assert_true(App\Services\Parsers\UpworkParser::canHandle('noreply@upwork.com', 'New job'), 'UpworkParser detects Upwork emails');
+assert_true(App\Services\Parsers\WellfoundParser::canHandle('notifications@wellfound.com', 'jobs'), 'WellfoundParser detects Wellfound emails');
+assert_true(App\Services\Parsers\ContraParser::canHandle('hello@contra.com', 'opportunity'), 'ContraParser detects Contra emails');
+assert_true(App\Services\Parsers\TuringParser::canHandle('notifications@turing.com', 'match'), 'TuringParser detects Turing emails');
+assert_true(App\Services\Parsers\FreelancerParser::canHandle('noreply@freelancer.com', 'project'), 'FreelancerParser detects Freelancer emails');
+assert_true(!App\Services\Parsers\UpworkParser::canHandle('someone@gmail.com', 'hello'), 'UpworkParser rejects non-Upwork emails');
+
+// Test UpworkParser with sample email
+$sampleEmail = "From: noreply@upwork.com\r\nSubject: New job: Build a PHP Dashboard\r\nContent-Type: text/plain\r\n\r\nNew job: Build a PHP Dashboard\n\nDescription:\nWe need a senior PHP developer to build a dashboard.\n\nSkills: PHP, MySQL, JavaScript, Bootstrap\nBudget: \$500 - \$1000 (fixed-price)\n\nClient location: United States\nClient rating: 4.8\n\nhttps://www.upwork.com/jobs/~01abc123\n\nUnsubscribe from job alerts";
+
+$parser = new App\Services\Parsers\UpworkParser($sampleEmail);
+$parsed = $parser->parse();
+assert_not_null($parsed, 'UpworkParser parses sample email');
+assert_true(str_contains($parsed['title'], 'PHP Dashboard'), 'UpworkParser extracts title');
+assert_true($parsed['budget_min'] == 500, 'UpworkParser extracts budget min');
+assert_true($parsed['budget_max'] == 1000, 'UpworkParser extracts budget max');
+assert_equals('fixed', $parsed['budget_type'], 'UpworkParser detects fixed budget');
+assert_true(str_contains($parsed['job_url'], 'upwork.com'), 'UpworkParser extracts job URL');
+
+// Test EmailPipeline loads
+require_once BASE_PATH . '/app/Services/EmailPipeline.php';
+$pipeline = new App\Services\EmailPipeline(1);
+assert_true($pipeline instanceof App\Services\EmailPipeline, 'EmailPipeline instantiates');
 
 echo "\n--- Routes ---\n";
 require_once BASE_PATH . '/core/Router.php';

@@ -69,6 +69,10 @@ class DashboardController extends \Core\Controller
         $stmtRecentJobs->execute([$userId]);
         $recentJobs = $stmtRecentJobs->fetchAll();
 
+        // Email pipeline stats
+        $emailJobs = Job::count("user_id = ? AND source = 'email'", [$userId]);
+        $emailJobsMonth = Job::count("user_id = ? AND source = 'email' AND created_at >= ?", [$userId, $monthStart]);
+
         // Recent 5 proposals with job titles
         $stmtRecentProposals = $db->prepare(
             "SELECT pr.*, j.title as job_title, j.fit_score
@@ -91,6 +95,8 @@ class DashboardController extends \Core\Controller
             'winRate' => $winRate,
             'recentJobs' => $recentJobs,
             'recentProposals' => $recentProposals,
+            'emailJobs' => $emailJobs,
+            'emailJobsMonth' => $emailJobsMonth,
             'userName' => Auth::user()['name'] ?? 'User',
         ]);
     }

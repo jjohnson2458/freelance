@@ -63,7 +63,7 @@ class ProposalController extends Controller
         ]);
     }
 
-    public function view($id)
+    public function show($id)
     {
         $this->requireAuth();
 

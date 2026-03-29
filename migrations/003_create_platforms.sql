@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS platforms (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Seed 5 target platforms
-INSERT INTO platforms (name, slug, base_url, is_active, alert_email_from, parser_class, notes) VALUES
+INSERT IGNORE INTO platforms (name, slug, base_url, is_active, alert_email_from, parser_class, notes) VALUES
 ('Upwork', 'upwork', 'https://www.upwork.com', 1, 'noreply@upwork.com', 'UpworkParser', 'Primary platform, bidding model'),
 ('Wellfound', 'wellfound', 'https://wellfound.com', 1, 'notifications@wellfound.com', 'WellfoundParser', 'Startup ecosystem, direct hire'),
 ('Contra', 'contra', 'https://contra.com', 1, 'hello@contra.com', 'ContraParser', 'Portfolio-driven, 0% commission'),

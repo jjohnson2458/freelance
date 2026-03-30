@@ -161,6 +161,7 @@ class ProposalController extends Controller
             'should_propose' => $result['should_propose'] ? 1 : 0,
             'recommendation' => $result['recommendation'],
             'skill_gaps' => !empty($result['skill_gaps']) ? json_encode($result['skill_gaps']) : null,
+            'milestones' => !empty($result['milestones']) ? json_encode($result['milestones']) : null,
             'api_model' => $result['api_model'],
             'api_tokens_used' => $result['api_tokens_used'],
             'generation_time_ms' => $result['generation_time_ms'],

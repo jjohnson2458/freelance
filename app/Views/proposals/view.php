@@ -109,6 +109,44 @@
                 </div>
             <?php endif; ?>
 
+            <?php
+                $milestones = [];
+                if (!empty($proposal['milestones'])) {
+                    $milestones = is_string($proposal['milestones']) ? json_decode($proposal['milestones'], true) : $proposal['milestones'];
+                }
+            ?>
+            <?php if (!empty($milestones)): ?>
+                <div class="card mb-4 border-primary">
+                    <div class="card-header bg-primary bg-opacity-10">
+                        <strong><i class="bi bi-flag me-1 text-primary"></i> Suggested Milestones</strong>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-sm mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width:5%">#</th>
+                                    <th style="width:25%">Milestone</th>
+                                    <th>Deliverables</th>
+                                    <th style="width:12%" class="text-end">Budget %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($milestones as $i => $ms): ?>
+                                    <tr>
+                                        <td class="text-muted"><?= $i + 1 ?></td>
+                                        <td class="fw-medium"><?= htmlspecialchars($ms['name'] ?? '') ?></td>
+                                        <td class="small"><?= htmlspecialchars($ms['description'] ?? '') ?></td>
+                                        <td class="text-end">
+                                            <span class="badge bg-primary"><?= (int) ($ms['percentage'] ?? 0) ?>%</span>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <?php if (!empty($proposal['is_submitted'])): ?>
             <div class="card mb-4">
                 <div class="card-header">

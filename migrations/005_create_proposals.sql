@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS proposals (
     should_propose TINYINT(1) DEFAULT 1,
     recommendation TEXT,
     skill_gaps JSON,
+    milestones JSON,
     is_submitted TINYINT(1) DEFAULT 0,
     submitted_at TIMESTAMP NULL,
     api_model VARCHAR(100),

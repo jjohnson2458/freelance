@@ -71,6 +71,7 @@ class ProposalGenerator
             'should_propose' => $parsed['should_propose'] ?? true,
             'recommendation' => $parsed['recommendation'] ?? '',
             'skill_gaps' => $parsed['skill_gaps'] ?? [],
+            'milestones' => $parsed['milestones'] ?? [],
             'api_model' => $response['model'],
             'api_tokens_used' => $response['tokens_used'],
             'generation_time_ms' => $response['generation_time_ms'],
@@ -90,6 +91,10 @@ IMPORTANT RULES:
 
 PLATFORM: {$platform['name']}
 Platform notes: {$platform['notes']}
+
+PLATFORM-SPECIFIC GUIDANCE:
+- For Upwork fixed-price projects: ALWAYS suggest milestone-based payment over "upon completion". Break the project into 2-4 milestones with a typical structure like: 25% for discovery/setup/initial delivery, 25-50% for core work/main deliverable, 25% for revisions and final delivery. Include a "Suggested Milestones" section at the end of the proposal text with milestone names, descriptions, and percentage of total budget.
+- For Upwork hourly projects: suggest weekly billing with clear deliverables per week.
 
 PROMPT;
 
@@ -124,8 +129,20 @@ RESPOND WITH VALID JSON ONLY. No markdown, no code fences. The JSON must have th
             "why": "<brief explanation of why this skill matters for this job>",
             "learn_url": "<a real, direct URL to a well-known learning resource (e.g. MDN, official docs, freeCodeCamp, Coursera, etc.)>"
         }
+    ],
+    "milestones": [
+        {
+            "name": "<milestone name, e.g. 'Project Setup & Discovery'>",
+            "description": "<what will be delivered in this milestone>",
+            "percentage": <integer percentage of total budget, e.g. 25>
+        }
     ]
 }
+
+IMPORTANT for milestones:
+- Include 2-4 milestones for fixed-price projects on platforms like Upwork
+- Percentages must add up to 100
+- For hourly or non-applicable projects, return an empty array
 
 IMPORTANT for skill_gaps:
 - Only include skills the freelancer is MISSING or WEAK in based on their resume
@@ -248,6 +265,7 @@ PROMPT;
             'should_propose' => $data['should_propose'] ?? true,
             'recommendation' => $data['recommendation'] ?? '',
             'skill_gaps' => $data['skill_gaps'] ?? [],
+            'milestones' => $data['milestones'] ?? [],
         ];
     }
 

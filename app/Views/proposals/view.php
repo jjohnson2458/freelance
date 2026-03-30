@@ -32,6 +32,74 @@
                     <div id="proposalText" style="white-space:pre-wrap;line-height:1.7;"><?= htmlspecialchars($proposal['content']) ?></div>
                 </div>
             </div>
+
+            <!-- Fit Analysis -->
+            <?php
+                $fitScore = (int) ($proposal['fit_score'] ?? 0);
+                $hasAnalysis = $fitScore > 0 || !empty($proposal['fit_notes']) || !empty($proposal['recommendation']);
+            ?>
+            <?php if ($hasAnalysis): ?>
+                <?php
+                    if ($fitScore >= 7) { $fitColor = 'success'; $fitIcon = 'check-circle-fill'; }
+                    elseif ($fitScore >= 5) { $fitColor = 'warning'; $fitIcon = 'exclamation-triangle-fill'; }
+                    else { $fitColor = 'danger'; $fitIcon = 'x-circle-fill'; }
+
+                    $shouldPropose = isset($proposal['should_propose']) ? (bool) $proposal['should_propose'] : ($fitScore >= 5);
+                ?>
+                <div class="card mb-4 border-<?= $fitColor ?>">
+                    <div class="card-header bg-<?= $fitColor ?> bg-opacity-10 d-flex justify-content-between align-items-center">
+                        <strong><i class="bi bi-<?= $fitIcon ?> me-1 text-<?= $fitColor ?>"></i> Fit Analysis</strong>
+                        <span class="badge bg-<?= $fitColor ?> fs-6"><?= $fitScore ?>/10</span>
+                    </div>
+                    <div class="card-body">
+                        <?php if (!empty($proposal['recommendation'])): ?>
+                            <div class="alert alert-<?= $shouldPropose ? 'success' : 'warning' ?> mb-3">
+                                <i class="bi bi-<?= $shouldPropose ? 'hand-thumbs-up-fill' : 'hand-thumbs-down-fill' ?> me-1"></i>
+                                <strong><?= $shouldPropose ? 'Recommended to propose' : 'Consider skipping' ?>:</strong>
+                                <?= htmlspecialchars($proposal['recommendation']) ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (!empty($proposal['fit_notes'])): ?>
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-2">Why this score?</h6>
+                                <p class="mb-0"><?= nl2br(htmlspecialchars($proposal['fit_notes'])) ?></p>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php
+                            $skillGaps = [];
+                            if (!empty($proposal['skill_gaps'])) {
+                                $skillGaps = is_string($proposal['skill_gaps']) ? json_decode($proposal['skill_gaps'], true) : $proposal['skill_gaps'];
+                            }
+                        ?>
+                        <?php if (!empty($skillGaps)): ?>
+                            <div>
+                                <h6 class="text-muted mb-2"><i class="bi bi-book me-1"></i>Skills to Learn</h6>
+                                <div class="list-group list-group-flush">
+                                    <?php foreach ($skillGaps as $gap): ?>
+                                        <div class="list-group-item px-0">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <strong><?= htmlspecialchars($gap['skill'] ?? '') ?></strong>
+                                                    <?php if (!empty($gap['why'])): ?>
+                                                        <p class="text-muted small mb-1"><?= htmlspecialchars($gap['why']) ?></p>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <?php if (!empty($gap['learn_url'])): ?>
+                                                    <a href="<?= htmlspecialchars($gap['learn_url']) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary flex-shrink-0 ms-2">
+                                                        <i class="bi bi-box-arrow-up-right me-1"></i>Learn
+                                                    </a>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
 
         <div class="col-md-4">

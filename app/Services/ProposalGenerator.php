@@ -68,6 +68,9 @@ class ProposalGenerator
             'rate_type' => $job['budget_type'] ?? 'not_specified',
             'tone' => $parsed['tone'] ?? $tone,
             'skip_reason' => $parsed['skip_reason'] ?? null,
+            'should_propose' => $parsed['should_propose'] ?? true,
+            'recommendation' => $parsed['recommendation'] ?? '',
+            'skill_gaps' => $parsed['skill_gaps'] ?? [],
             'api_model' => $response['model'],
             'api_tokens_used' => $response['tokens_used'],
             'generation_time_ms' => $response['generation_time_ms'],
@@ -112,8 +115,23 @@ RESPOND WITH VALID JSON ONLY. No markdown, no code fences. The JSON must have th
     "proposal_text": "<the full proposal text, ready to submit>",
     "suggested_rate": <number or null if not applicable>,
     "tone": "<detected/applied tone: corporate, casual, technical, professional>",
-    "skip_reason": "<string or null — if fit_score < 5, explain why this job should be skipped>"
+    "skip_reason": "<string or null — if fit_score < 5, explain why this job should be skipped>",
+    "should_propose": <boolean — true if the freelancer should submit this proposal, false if they should skip it>,
+    "recommendation": "<1-2 sentence recommendation on whether to pursue this job and why>",
+    "skill_gaps": [
+        {
+            "skill": "<name of the missing or weak skill>",
+            "why": "<brief explanation of why this skill matters for this job>",
+            "learn_url": "<a real, direct URL to a well-known learning resource (e.g. MDN, official docs, freeCodeCamp, Coursera, etc.)>"
+        }
+    ]
 }
+
+IMPORTANT for skill_gaps:
+- Only include skills the freelancer is MISSING or WEAK in based on their resume
+- Each learn_url must be a real, publicly accessible URL to official documentation or a reputable learning platform
+- Provide 1-5 skill gaps, or an empty array if there are no gaps
+- Prioritize the most impactful gaps first
 PROMPT;
 
         return $prompt;
@@ -211,6 +229,9 @@ PROMPT;
             'suggested_rate' => isset($data['suggested_rate']) ? (float) $data['suggested_rate'] : null,
             'tone' => $data['tone'] ?? 'professional',
             'skip_reason' => $data['skip_reason'] ?? null,
+            'should_propose' => $data['should_propose'] ?? true,
+            'recommendation' => $data['recommendation'] ?? '',
+            'skill_gaps' => $data['skill_gaps'] ?? [],
         ];
     }
 

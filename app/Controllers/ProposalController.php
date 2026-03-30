@@ -72,6 +72,7 @@ class ProposalController extends Controller
             SELECT p.*, j.title as job_title, j.description as job_description,
                    j.skills_required, j.budget_min, j.budget_max, j.budget_type,
                    j.status as job_status, j.user_id as job_user_id,
+                   j.fit_score, j.fit_notes,
                    pl.name as platform_name
             FROM proposals p
             JOIN jobs j ON p.job_id = j.id
@@ -157,6 +158,9 @@ class ProposalController extends Controller
             'suggested_rate' => $result['suggested_rate'],
             'rate_type' => $result['rate_type'],
             'version' => $maxVer + 1,
+            'should_propose' => $result['should_propose'] ? 1 : 0,
+            'recommendation' => $result['recommendation'],
+            'skill_gaps' => !empty($result['skill_gaps']) ? json_encode($result['skill_gaps']) : null,
             'api_model' => $result['api_model'],
             'api_tokens_used' => $result['api_tokens_used'],
             'generation_time_ms' => $result['generation_time_ms'],

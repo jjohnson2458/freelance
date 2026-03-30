@@ -31,6 +31,8 @@ $router->get('jobs', 'JobController@index');
 $router->get('jobs/create', 'JobController@create');
 $router->post('jobs/store', 'JobController@store');
 $router->get('jobs/view/{id}', 'JobController@show');
+$router->get('jobs/edit/{id}', 'JobController@edit');
+$router->post('jobs/update/{id}', 'JobController@update');
 $router->post('jobs/delete/{id}', 'JobController@delete');
 $router->post('jobs/archive/{id}', 'JobController@archive');
 

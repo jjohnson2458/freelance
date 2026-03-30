@@ -19,9 +19,10 @@
         <h1 class="h3 mb-0">
             <i class="bi bi-briefcase me-2"></i><?= htmlspecialchars($job['title']) ?>
         </h1>
-        <a href="/jobs" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i> Back to Jobs
-        </a>
+        <div class="d-flex gap-2">
+            <a href="/jobs/edit/<?= $job['id'] ?>" class="btn btn-outline-secondary"><i class="bi bi-pencil me-1"></i>Edit</a>
+            <a href="/jobs" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back to Jobs</a>
+        </div>
     </div>
 
     <!-- Job Details Card -->

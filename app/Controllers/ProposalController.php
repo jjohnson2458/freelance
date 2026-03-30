@@ -216,6 +216,12 @@ class ProposalController extends Controller
             return;
         }
 
+        if (!empty($proposal['is_submitted'])) {
+            $this->flash('error', 'Submitted proposals cannot be edited.');
+            $this->redirect('/proposals/view/' . $id);
+            return;
+        }
+
         $this->view('proposals.edit', [
             'activePage' => 'proposals',
             'pageTitle' => 'Edit Proposal',
@@ -238,6 +244,12 @@ class ProposalController extends Controller
 
         if (!$proposal || $proposal['job_user_id'] != Auth::id()) {
             $this->redirect('/proposals');
+            return;
+        }
+
+        if (!empty($proposal['is_submitted'])) {
+            $this->flash('error', 'Submitted proposals cannot be edited.');
+            $this->redirect('/proposals/view/' . $id);
             return;
         }
 

@@ -8,7 +8,9 @@
             <span class="text-muted"><?= htmlspecialchars($proposal['platform_name']) ?> &bull; Version <?= $proposal['version'] ?> &bull; <?= date('M j, Y g:ia', strtotime($proposal['created_at'])) ?></span>
         </div>
         <div>
-            <a href="/proposals/edit/<?= $proposal['id'] ?>" class="btn btn-outline-secondary"><i class="bi bi-pencil"></i> Edit</a>
+            <?php if (empty($proposal['is_submitted'])): ?>
+                <a href="/proposals/edit/<?= $proposal['id'] ?>" class="btn btn-outline-secondary"><i class="bi bi-pencil"></i> Edit</a>
+            <?php endif; ?>
             <a href="/proposals/pdf/<?= $proposal['id'] ?>" class="btn btn-outline-primary" target="_blank"><i class="bi bi-file-pdf"></i> PDF</a>
             <a href="/proposals" class="btn btn-outline-dark"><i class="bi bi-arrow-left"></i> Back</a>
         </div>

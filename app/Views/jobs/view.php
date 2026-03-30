@@ -233,7 +233,7 @@
             <?php if ($activeResume): ?>
                 <div class="bg-light rounded p-3">
                     <h6 class="mb-3"><i class="bi bi-magic me-1"></i> Generate New Proposal</h6>
-                    <form method="POST" action="/proposals/generate/<?= $job['id'] ?>" class="row g-2 align-items-end">
+                    <form method="POST" action="/proposals/generate/<?= $job['id'] ?>" class="row g-2 align-items-end" data-processing data-processing-title="Generating Proposal..." data-processing-message="Analyzing the job posting and crafting your proposal. This may take 15-30 seconds.">
                         <?= \Core\Csrf::field() ?>
                         <div class="col-md-4">
                             <label for="tone" class="form-label">Tone</label>

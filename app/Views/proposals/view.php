@@ -65,7 +65,7 @@
             <div class="card mb-4">
                 <div class="card-header"><strong>Regenerate</strong></div>
                 <div class="card-body">
-                    <form method="POST" action="/proposals/regenerate/<?= $proposal['id'] ?>">
+                    <form method="POST" action="/proposals/regenerate/<?= $proposal['id'] ?>" data-processing data-processing-title="Regenerating Proposal..." data-processing-message="Crafting a new version of your proposal. This may take 15-30 seconds.">
                         <?= \Core\Csrf::field() ?>
                         <div class="mb-3">
                             <label class="form-label">Tone</label>

@@ -116,6 +116,18 @@
                         </div>
                     </div>
                 <?php endif; ?>
+                <?php if (!empty($job['file_path'])): ?>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small mb-1">Attached File</label>
+                            <div>
+                                <a href="<?= htmlspecialchars($job['file_path']) ?>" target="_blank" class="text-decoration-none">
+                                    <i class="bi bi-file-earmark me-1"></i><?= strtoupper(htmlspecialchars($job['file_type'] ?? 'FILE')) ?>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <?php if (!empty($job['skills_required'])): ?>

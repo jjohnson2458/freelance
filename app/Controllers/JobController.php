@@ -139,7 +139,7 @@ class JobController extends \Core\Controller
         // Store the raw posting as description for now
         $description = $rawPosting;
 
-        $jobId = Job::create([
+        $data = [
             'user_id' => Auth::id(),
             'platform_id' => $platformId,
             'title' => $title,
@@ -149,7 +149,40 @@ class JobController extends \Core\Controller
             'status' => 'new',
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
-        ]);
+        ];
+
+        // Handle file upload
+        if (!empty($_FILES['job_file']['name'])) {
+            $file = $_FILES['job_file'];
+            $allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
+            $allowedExts = ['pdf', 'doc', 'docx', 'txt'];
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+            if (!in_array($file['type'], $allowedTypes) || !in_array($ext, $allowedExts)) {
+                $this->flash('error', 'Invalid file type. Allowed: PDF, DOC, DOCX, TXT.');
+                $this->redirect('/jobs/create');
+                return;
+            }
+
+            if ($file['size'] > 10 * 1024 * 1024) {
+                $this->flash('error', 'File too large. Maximum size: 10MB.');
+                $this->redirect('/jobs/create');
+                return;
+            }
+
+            $uploadDir = BASE_PATH . '/public/uploads/jobs/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            $filename = uniqid('job_') . '.' . $ext;
+            if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
+                $data['file_path'] = '/uploads/jobs/' . $filename;
+                $data['file_type'] = $ext;
+            }
+        }
+
+        $jobId = Job::create($data);
 
         $this->flash('success', 'Job saved successfully.');
         $this->redirect('/jobs/view/' . $jobId);

@@ -22,7 +22,7 @@ require BASE_PATH . '/app/Views/layouts/header.php';
 
     <div class="card">
         <div class="card-body">
-            <form method="POST" action="/resumes" enctype="multipart/form-data">
+            <form method="POST" action="/resumes/store" enctype="multipart/form-data">
                 <?= \Core\Csrf::field() ?>
 
                 <div class="mb-3">

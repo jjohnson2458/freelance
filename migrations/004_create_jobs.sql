@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS jobs (
     budget_type ENUM('fixed','hourly','not_specified') DEFAULT 'not_specified',
     client_info TEXT,
     job_url VARCHAR(500),
+    file_path VARCHAR(500) DEFAULT NULL,
+    file_type VARCHAR(10) DEFAULT NULL,
     source ENUM('manual','email') DEFAULT 'manual',
     raw_email TEXT,
     fit_score TINYINT,

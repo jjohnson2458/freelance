@@ -11,7 +11,7 @@
 
     <div class="card">
         <div class="card-body p-4">
-            <form method="POST" action="/jobs/store">
+            <form method="POST" action="/jobs/store" enctype="multipart/form-data">
                 <?= \Core\Csrf::field() ?>
 
                 <div class="mb-3">
@@ -33,6 +33,12 @@
                 <div class="mb-3">
                     <label for="job_url" class="form-label">Job URL</label>
                     <input type="url" name="job_url" id="job_url" class="form-control" placeholder="https://..." maxlength="500">
+                </div>
+
+                <div class="mb-3">
+                    <label for="job_file" class="form-label">Upload Job Posting (optional)</label>
+                    <input type="file" class="form-control" id="job_file" name="job_file" accept=".pdf,.doc,.docx,.txt">
+                    <div class="form-text">Accepted formats: PDF, DOC, DOCX, TXT. Max size: 10MB.</div>
                 </div>
 
                 <div class="mb-4">

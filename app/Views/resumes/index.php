@@ -73,18 +73,18 @@ require BASE_PATH . '/app/Views/layouts/header.php';
                                 <td class="text-muted"><?= date('M j, Y', strtotime($resume['created_at'])) ?></td>
                                 <td class="text-end">
                                     <div class="btn-group btn-group-sm">
-                                        <a href="/resumes/<?= $resume['id'] ?>/edit" class="btn btn-outline-primary" title="Edit">
+                                        <a href="/resumes/edit/<?= $resume['id'] ?>" class="btn btn-outline-primary" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <?php if (empty($resume['is_active'])): ?>
-                                            <form method="POST" action="/resumes/<?= $resume['id'] ?>/activate" class="d-inline">
+                                            <form method="POST" action="/resumes/activate/<?= $resume['id'] ?>" class="d-inline">
                                                 <?= \Core\Csrf::field() ?>
                                                 <button type="submit" class="btn btn-outline-success" title="Set as Active">
                                                     <i class="bi bi-check-lg"></i>
                                                 </button>
                                             </form>
                                         <?php endif; ?>
-                                        <form method="POST" action="/resumes/<?= $resume['id'] ?>/delete" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this resume?');">
+                                        <form method="POST" action="/resumes/delete/<?= $resume['id'] ?>" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this resume?');">
                                             <?= \Core\Csrf::field() ?>
                                             <button type="submit" class="btn btn-outline-danger" title="Delete">
                                                 <i class="bi bi-trash"></i>

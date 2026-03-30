@@ -6,6 +6,7 @@ use Core\Database;
 use Core\ErrorHandler;
 
 require_once BASE_PATH . '/app/Services/ClaudeApiService.php';
+require_once BASE_PATH . '/app/Services/FileTextExtractor.php';
 
 class ProposalGenerator
 {
@@ -120,7 +121,18 @@ PROMPT;
 
     private function buildUserMessage(array $job, array $resume, array $availability): string
     {
-        $message = "MY RESUME:\n" . ($resume['content'] ?? 'No resume content available.') . "\n\n";
+        $resumeContent = $resume['content'] ?? '';
+
+        // If resume has an attached file, extract and append its text
+        if (!empty($resume['file_path']) && !empty($resume['file_type'])) {
+            $absPath = BASE_PATH . '/public' . $resume['file_path'];
+            $fileText = FileTextExtractor::extract($absPath, $resume['file_type']);
+            if ($fileText) {
+                $resumeContent = $fileText . ($resumeContent ? "\n\n" . $resumeContent : '');
+            }
+        }
+
+        $message = "MY RESUME:\n" . ($resumeContent ?: 'No resume content available.') . "\n\n";
 
         $message .= "JOB POSTING:\n";
         $message .= "Title: " . ($job['title'] ?? 'Untitled') . "\n";
@@ -139,6 +151,15 @@ PROMPT;
         }
         if (!empty($job['client_info'])) {
             $message .= "Client Info: {$job['client_info']}\n";
+        }
+
+        // Include text extracted from attached file
+        if (!empty($job['file_path']) && !empty($job['file_type'])) {
+            $absPath = BASE_PATH . '/public' . $job['file_path'];
+            $fileText = FileTextExtractor::extract($absPath, $job['file_type']);
+            if ($fileText) {
+                $message .= "\nATTACHED DOCUMENT CONTENT:\n" . $fileText . "\n";
+            }
         }
 
         // Add availability

@@ -32,6 +32,11 @@ $user = \Core\Auth::user();
             </a>
         </li>
         <li class="nav-item mb-1">
+            <a href="/talents" class="nav-link sidebar-link <?= $activePage === 'talents' ? 'active' : '' ?>">
+                <i class="bi bi-stars me-2"></i> Talents
+            </a>
+        </li>
+        <li class="nav-item mb-1">
             <a href="/rules" class="nav-link sidebar-link <?= $activePage === 'rules' ? 'active' : '' ?>">
                 <i class="bi bi-list-check me-2"></i> Rules
             </a>
@@ -44,6 +49,11 @@ $user = \Core\Auth::user();
         <li class="nav-item mb-1">
             <a href="/calendar" class="nav-link sidebar-link <?= $activePage === 'calendar' ? 'active' : '' ?>">
                 <i class="bi bi-calendar3 me-2"></i> Calendar
+            </a>
+        </li>
+        <li class="nav-item mb-1">
+            <a href="/guide" class="nav-link sidebar-link <?= $activePage === 'guide' ? 'active' : '' ?>">
+                <i class="bi bi-question-circle me-2"></i> User Guide
             </a>
         </li>
     </ul>

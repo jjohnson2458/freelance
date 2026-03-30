@@ -159,8 +159,40 @@ require BASE_PATH . '/config/routes.php';
 // Just verify routes file loads without errors
 assert_true(true, 'Routes file loads without errors');
 
+echo "\n--- Talent Model ---\n";
+require_once BASE_PATH . '/app/Models/Talent.php';
+assert_true(class_exists('App\Models\Talent'), 'Talent class exists');
+assert_true(method_exists('App\Models\Talent', 'getByUser'), 'Talent has getByUser method');
+
+$talents = App\Models\Talent::getByUser($user['id']);
+assert_true(is_array($talents), 'Talent::getByUser returns an array');
+
+echo "\n--- FileTextExtractor ---\n";
+require_once BASE_PATH . '/app/Services/FileTextExtractor.php';
+assert_true(class_exists('App\Services\FileTextExtractor'), 'FileTextExtractor class exists');
+
+// Test extractTxt with a temp file
+$tmpFile = tempnam(sys_get_temp_dir(), 'test_');
+file_put_contents($tmpFile, 'Hello from test file');
+$extracted = App\Services\FileTextExtractor::extract($tmpFile, 'txt');
+assert_equals('Hello from test file', trim($extracted), 'FileTextExtractor::extract reads .txt content');
+unlink($tmpFile);
+
+// Test extract returns null for missing file
+$missing = App\Services\FileTextExtractor::extract('/nonexistent/file.txt', 'txt');
+assert_true($missing === null, 'FileTextExtractor returns null for missing file');
+
+echo "\n--- Route Validation ---\n";
+// Verify new routes are registered by checking the routes file defines them
+$routesContent = file_get_contents(BASE_PATH . '/config/routes.php');
+assert_true(str_contains($routesContent, "'talents'"), 'Routes file contains talents route');
+assert_true(str_contains($routesContent, "'talents/create'"), 'Routes file contains talents/create route');
+assert_true(str_contains($routesContent, "'talents/store'"), 'Routes file contains talents/store route');
+assert_true(str_contains($routesContent, "'talents/toggle/{id}'"), 'Routes file contains talents/toggle route');
+assert_true(str_contains($routesContent, "'guide'"), 'Routes file contains guide route');
+
 echo "\n--- Database Schema ---\n";
-$tables = ['users', 'resumes', 'platforms', 'jobs', 'proposals', 'proposal_rules', 'availability', 'error_log'];
+$tables = ['users', 'resumes', 'platforms', 'jobs', 'proposals', 'proposal_rules', 'availability', 'error_log', 'talents'];
 foreach ($tables as $table) {
     $stmt = $db->query("SHOW TABLES LIKE '{$table}'");
     assert_true($stmt->rowCount() > 0, "Table '{$table}' exists");

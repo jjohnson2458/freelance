@@ -1,0 +1,9 @@
+along with posting a resume, the user can also list other talents
+add unit and playright test scripts
+include a userguide
+and flag to know if you have sent a proposal
+a box for feedback on a sent proposal.
+validate that you have username and password access - to check features beyond the login
+username: email4johnson@gmail.com
+password: 24 AdaPlace
+color of copy button contracts with header color. please adjust

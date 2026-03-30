@@ -12,6 +12,14 @@
                 <a href="/proposals/edit/<?= $proposal['id'] ?>" class="btn btn-outline-secondary"><i class="bi bi-pencil"></i> Edit</a>
             <?php endif; ?>
             <a href="/proposals/pdf/<?= $proposal['id'] ?>" class="btn btn-outline-primary" target="_blank"><i class="bi bi-file-pdf"></i> PDF</a>
+            <?php if (empty($proposal['is_submitted'])): ?>
+                <form method="POST" action="/proposals/submit/<?= $proposal['id'] ?>" class="d-inline" onsubmit="return confirm('Mark this proposal as sent?')">
+                    <?= \Core\Csrf::field() ?>
+                    <button type="submit" class="btn btn-success"><i class="bi bi-send"></i> Mark as Sent</button>
+                </form>
+            <?php else: ?>
+                <span class="badge bg-success fs-6 align-middle"><i class="bi bi-check-circle me-1"></i> Sent <?= date('M j, Y g:i A', strtotime($proposal['submitted_at'])) ?></span>
+            <?php endif; ?>
             <a href="/proposals" class="btn btn-outline-dark"><i class="bi bi-arrow-left"></i> Back</a>
         </div>
     </div>
@@ -26,7 +34,7 @@
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <strong>Proposal Text</strong>
-                    <button class="btn btn-sm btn-outline-primary" onclick="copyProposal()" id="copyBtn"><i class="bi bi-clipboard"></i> Copy</button>
+                    <button class="btn btn-sm btn-outline-light" onclick="copyProposal()" id="copyBtn"><i class="bi bi-clipboard"></i> Copy</button>
                 </div>
                 <div class="card-body">
                     <div id="proposalText" style="white-space:pre-wrap;line-height:1.7;"><?= htmlspecialchars($proposal['content']) ?></div>
@@ -99,6 +107,52 @@
                         <?php endif; ?>
                     </div>
                 </div>
+            <?php endif; ?>
+
+            <?php if (!empty($proposal['is_submitted'])): ?>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong><i class="bi bi-chat-dots me-1"></i> Proposal Feedback</strong>
+                </div>
+                <div class="card-body">
+                    <?php if (!empty($proposal['feedback'])): ?>
+                        <div class="mb-3">
+                            <?php if (!empty($proposal['client_response'])): ?>
+                                <?php
+                                    $responseColors = ['won' => 'success', 'rejected' => 'danger', 'no_response' => 'secondary', 'interview' => 'info'];
+                                    $responseLabels = ['won' => 'Won', 'rejected' => 'Rejected', 'no_response' => 'No Response', 'interview' => 'Interview'];
+                                    $rColor = $responseColors[$proposal['client_response']] ?? 'secondary';
+                                    $rLabel = $responseLabels[$proposal['client_response']] ?? $proposal['client_response'];
+                                ?>
+                                <span class="badge bg-<?= $rColor ?> mb-2"><?= $rLabel ?></span>
+                            <?php endif; ?>
+                            <p class="mb-1"><?= nl2br(htmlspecialchars($proposal['feedback'])) ?></p>
+                            <?php if (!empty($proposal['feedback_at'])): ?>
+                                <small class="text-muted"><?= date('M j, Y g:i A', strtotime($proposal['feedback_at'])) ?></small>
+                            <?php endif; ?>
+                        </div>
+                        <hr>
+                    <?php endif; ?>
+                    <form method="POST" action="/proposals/feedback/<?= $proposal['id'] ?>">
+                        <?= \Core\Csrf::field() ?>
+                        <div class="mb-3">
+                            <label for="client_response" class="form-label">Client Response</label>
+                            <select name="client_response" id="client_response" class="form-select">
+                                <option value="">Select...</option>
+                                <option value="interview" <?= ($proposal['client_response'] ?? '') === 'interview' ? 'selected' : '' ?>>Interview / Follow-up</option>
+                                <option value="won" <?= ($proposal['client_response'] ?? '') === 'won' ? 'selected' : '' ?>>Won the Job</option>
+                                <option value="rejected" <?= ($proposal['client_response'] ?? '') === 'rejected' ? 'selected' : '' ?>>Rejected</option>
+                                <option value="no_response" <?= ($proposal['client_response'] ?? '') === 'no_response' ? 'selected' : '' ?>>No Response</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="feedback" class="form-label">Notes / Feedback</label>
+                            <textarea name="feedback" id="feedback" class="form-control" rows="3" placeholder="What was the client's response? Any lessons learned?"><?= htmlspecialchars($proposal['feedback'] ?? '') ?></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-save me-1"></i> Save Feedback</button>
+                    </form>
+                </div>
+            </div>
             <?php endif; ?>
         </div>
 

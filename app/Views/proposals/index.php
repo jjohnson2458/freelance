@@ -32,6 +32,7 @@
                         <th>Tone</th>
                         <th>Rate</th>
                         <th>Version</th>
+                        <th>Status</th>
                         <th>Generated</th>
                         <th>Actions</th>
                     </tr>
@@ -50,6 +51,13 @@
                             <?php endif; ?>
                         </td>
                         <td>v<?= $p['version'] ?></td>
+                        <td>
+                            <?php if (!empty($p['is_submitted'])): ?>
+                                <span class="badge bg-success" title="Sent <?= date('M j, Y g:i A', strtotime($p['submitted_at'])) ?>"><i class="bi bi-check-circle me-1"></i>Sent</span>
+                            <?php else: ?>
+                                <span class="badge bg-secondary"><i class="bi bi-pencil me-1"></i>Draft</span>
+                            <?php endif; ?>
+                        </td>
                         <td><?= date('M j, Y', strtotime($p['created_at'])) ?></td>
                         <td>
                             <a href="/proposals/view/<?= $p['id'] ?>" class="btn btn-sm btn-outline-primary" title="View"><i class="bi bi-eye"></i></a>

@@ -26,6 +26,15 @@ $router->post('resumes/update/{id}', 'ResumeController@update');
 $router->post('resumes/delete/{id}', 'ResumeController@delete');
 $router->post('resumes/activate/{id}', 'ResumeController@activate');
 
+// Talents
+$router->get('talents', 'TalentController@index');
+$router->get('talents/create', 'TalentController@create');
+$router->post('talents/store', 'TalentController@store');
+$router->get('talents/edit/{id}', 'TalentController@edit');
+$router->post('talents/update/{id}', 'TalentController@update');
+$router->post('talents/delete/{id}', 'TalentController@delete');
+$router->post('talents/toggle/{id}', 'TalentController@toggle');
+
 // Jobs
 $router->get('jobs', 'JobController@index');
 $router->get('jobs/create', 'JobController@create');
@@ -44,6 +53,8 @@ $router->post('proposals/regenerate/{id}', 'ProposalController@regenerate');
 $router->get('proposals/edit/{id}', 'ProposalController@edit');
 $router->post('proposals/update/{id}', 'ProposalController@update');
 $router->post('proposals/delete/{id}', 'ProposalController@delete');
+$router->post('proposals/submit/{id}', 'ProposalController@submit');
+$router->post('proposals/feedback/{id}', 'ProposalController@feedback');
 $router->get('proposals/pdf/{id}', 'ProposalController@pdf');
 
 // Platforms
@@ -67,3 +78,6 @@ $router->get('calendar', 'CalendarController@index');
 $router->post('calendar/store', 'CalendarController@store');
 $router->post('calendar/update/{id}', 'CalendarController@update');
 $router->post('calendar/delete/{id}', 'CalendarController@delete');
+
+// User Guide
+$router->get('guide', 'GuideController@index');

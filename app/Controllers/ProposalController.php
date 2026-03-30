@@ -288,6 +288,61 @@ class ProposalController extends Controller
         $this->redirect('/proposals');
     }
 
+    public function submit(string $id): void
+    {
+        $this->requireAuth();
+        Csrf::verifyOrFail();
+
+        $db = Database::getInstance();
+        $stmt = $db->prepare("SELECT p.*, j.user_id as job_user_id FROM proposals p JOIN jobs j ON p.job_id = j.id WHERE p.id = ?");
+        $stmt->execute([(int) $id]);
+        $proposal = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$proposal || $proposal['job_user_id'] != Auth::id()) {
+            $this->redirect('/proposals');
+            return;
+        }
+
+        Proposal::update((int) $id, [
+            'is_submitted' => 1,
+            'submitted_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        $this->flash('success', 'Proposal marked as sent.');
+        $this->redirect('/proposals/view/' . $id);
+    }
+
+    public function feedback(string $id): void
+    {
+        $this->requireAuth();
+        Csrf::verifyOrFail();
+
+        $db = Database::getInstance();
+        $stmt = $db->prepare("SELECT p.*, j.user_id as job_user_id FROM proposals p JOIN jobs j ON p.job_id = j.id WHERE p.id = ?");
+        $stmt->execute([(int) $id]);
+        $proposal = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$proposal || $proposal['job_user_id'] != Auth::id()) {
+            $this->redirect('/proposals');
+            return;
+        }
+
+        $data = [
+            'feedback' => trim($_POST['feedback'] ?? ''),
+            'feedback_at' => date('Y-m-d H:i:s'),
+        ];
+
+        $clientResponse = $_POST['client_response'] ?? '';
+        if (in_array($clientResponse, ['won', 'rejected', 'no_response', 'interview'])) {
+            $data['client_response'] = $clientResponse;
+        }
+
+        Proposal::update((int) $id, $data);
+
+        $this->flash('success', 'Feedback saved.');
+        $this->redirect('/proposals/view/' . $id);
+    }
+
     public function pdf($id)
     {
         $this->requireAuth();

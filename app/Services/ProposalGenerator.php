@@ -180,6 +180,22 @@ PROMPT;
             }
         }
 
+        // Include user talents
+        require_once BASE_PATH . '/app/Models/Talent.php';
+        $talents = \App\Models\Talent::getByUser(\Core\Auth::id());
+        $activeTalents = array_filter($talents, fn($t) => $t['is_active']);
+        if (!empty($activeTalents)) {
+            $message .= "\nMY SKILLS & TALENTS:\n";
+            foreach ($activeTalents as $t) {
+                $message .= "- {$t['name']}";
+                if ($t['proficiency']) $message .= " ({$t['proficiency']})";
+                if ($t['years_experience']) $message .= " - {$t['years_experience']} years";
+                if ($t['description']) $message .= ": {$t['description']}";
+                $message .= "\n";
+            }
+            $message .= "\n";
+        }
+
         // Add availability
         if (!empty($availability)) {
             $message .= "\nMY AVAILABILITY:\n";

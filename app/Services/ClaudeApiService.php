@@ -5,6 +5,8 @@ namespace App\Services;
 use Core\Env;
 use Core\ErrorHandler;
 
+require_once BASE_PATH . '/app/Services/ApiUsageLogger.php';
+
 class ClaudeApiService
 {
     private string $apiKey;
@@ -17,7 +19,7 @@ class ClaudeApiService
         $this->model = Env::get('ANTHROPIC_MODEL', 'claude-sonnet-4-6');
     }
 
-    public function sendMessage(string $systemPrompt, string $userMessage, int $maxTokens = 4096): ?array
+    public function sendMessage(string $systemPrompt, string $userMessage, int $maxTokens = 4096, string $feature = 'unknown'): ?array
     {
         if (empty($this->apiKey)) {
             ErrorHandler::log('Anthropic API key not configured');
@@ -55,8 +57,11 @@ class ClaudeApiService
 
         $elapsedMs = (int) ((microtime(true) - $startTime) * 1000);
 
+        $userId = $_SESSION['user_id'] ?? null;
+
         if ($error) {
             ErrorHandler::log('Claude API curl error: ' . $error);
+            ApiUsageLogger::log($userId, $feature, $this->model, 0, 0, $elapsedMs, false, 'curl error: ' . $error);
             return null;
         }
 
@@ -65,12 +70,15 @@ class ClaudeApiService
         if ($httpCode !== 200) {
             $errorMsg = $data['error']['message'] ?? 'Unknown API error';
             ErrorHandler::log("Claude API error ({$httpCode}): {$errorMsg}");
+            ApiUsageLogger::log($userId, $feature, $this->model, 0, 0, $elapsedMs, false, "HTTP {$httpCode}: {$errorMsg}");
             return null;
         }
 
         $text = $data['content'][0]['text'] ?? '';
         $inputTokens = $data['usage']['input_tokens'] ?? 0;
         $outputTokens = $data['usage']['output_tokens'] ?? 0;
+
+        ApiUsageLogger::log($userId, $feature, $data['model'] ?? $this->model, $inputTokens, $outputTokens, $elapsedMs);
 
         return [
             'text' => $text,

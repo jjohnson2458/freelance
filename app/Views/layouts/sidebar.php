@@ -56,6 +56,16 @@ $user = \Core\Auth::user();
                 <i class="bi bi-question-circle me-2"></i> User Guide
             </a>
         </li>
+        <?php if ($user && ($user['role'] ?? '') === 'admin'): ?>
+            <li class="nav-item mt-3 mb-1">
+                <small class="text-white-50 px-3 text-uppercase" style="font-size:0.7rem;">Admin</small>
+            </li>
+            <li class="nav-item mb-1">
+                <a href="/admin/api-usage" class="nav-link sidebar-link <?= $activePage === 'api_usage' ? 'active' : '' ?>">
+                    <i class="bi bi-graph-up me-2"></i> API Usage
+                </a>
+            </li>
+        <?php endif; ?>
     </ul>
     <div class="sidebar-footer px-3 py-3 border-top border-secondary">
         <?php if ($user): ?>

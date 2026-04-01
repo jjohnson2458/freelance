@@ -81,3 +81,6 @@ $router->post('calendar/delete/{id}', 'CalendarController@delete');
 
 // User Guide
 $router->get('guide', 'GuideController@index');
+
+// Admin
+$router->get('admin/api-usage', 'ApiUsageController@index');

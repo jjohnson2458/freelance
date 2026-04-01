@@ -39,7 +39,7 @@ class ProposalGenerator
         $systemPrompt = $this->buildSystemPrompt($rules, $platform, $tone);
         $userMessage = $this->buildUserMessage($job, $resume, $availability);
 
-        $response = $this->api->sendMessage($systemPrompt, $userMessage, 4096);
+        $response = $this->api->sendMessage($systemPrompt, $userMessage, 4096, 'proposal_generate');
 
         if (!$response) {
             return null;
